@@ -3,23 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "react-native-scripts": "1.8.0",
+    "concurrently": "^3.5.1",
+    "elm-live": "^2.7.5",
     "jest-expo": "23.0.0",
+    "react-native-scripts": "1.8.0",
     "react-test-renderer": "16.0.0"
   },
   "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {
-    "start": "react-native-scripts start",
+    "start":
+      "concurrently --kill-others --raw 'elm live --output=lib/main.js Main.elm' 'react-native-scripts start'",
     "eject": "react-native-scripts eject",
     "android": "react-native-scripts android",
     "ios": "react-native-scripts ios",
     "test": "node node_modules/jest/bin/jest.js --watch",
-    "compile-elm": "elm make --output lib/main.js Main.elm" 
+    "compile-elm": "elm make --output=lib/main.js Main.elm"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
+    "elm": "^0.18.0",
     "expo": "^23.0.4",
     "react": "16.0.0",
     "react-native": "0.50.3"
