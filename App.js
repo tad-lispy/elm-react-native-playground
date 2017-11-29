@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 
 // Elm program
 import Elm from './lib/main';
@@ -14,6 +14,9 @@ export default class App extends React.Component {
   componentDidMount() {
     worker.ports.state.subscribe(count => this.setState({ count }));
   }
+  decrement() {
+    worker.ports.events.send('Decrement');
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -21,6 +24,7 @@ export default class App extends React.Component {
         <Text>{this.state.count}</Text>
         <Text>Changes you make will automatically reload.</Text>
         <Text>Shake your phone to open the developer menu.</Text>
+        <Button title="Decrement" onPress={this.decrement} />
       </View>
     );
   }

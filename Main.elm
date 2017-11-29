@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Platform
+import Json.Decode
 import Time exposing (every, second)
 
 
@@ -9,14 +10,16 @@ type alias Model =
 
 
 type Msg
-    = Increment
+    = NoOp
+    | Increment
+    | Decrement
 
 
 main =
     Platform.program
         { init = init
         , subscriptions = subscriptions
-        , update = update
+        , update = updateAndSend
         }
 
 
@@ -25,18 +28,46 @@ init =
 
 
 subscriptions model =
-    always Increment
-        |> Time.every second
+    let
+        handleEvent event =
+            case event of
+                "Decrement" ->
+                    Decrement
+
+                _ ->
+                    NoOp
+    in
+        Sub.batch
+            [ always Increment
+                |> Time.every second
+            , events handleEvent
+            ]
 
 
 update msg model =
     case msg of
+        NoOp ->
+            model ! []
+
         Increment ->
-            let
-                next =
-                    Debug.log "next state" (model + 1)
-            in
-                next ! [ state next ]
+            (model + 1) ! []
+
+        Decrement ->
+            (model - 1) ! []
+
+
+updateAndSend msg model =
+    let
+        ( next, cmd ) =
+            update msg model
+
+        _ =
+            Debug.log "Sending" next
+    in
+        next ! [ cmd, state next ]
 
 
 port state : Model -> Cmd msg
+
+
+port events : (String -> msg) -> Sub msg
