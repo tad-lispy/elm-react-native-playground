@@ -22,7 +22,7 @@ export default class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { counr: 0 };
+    this.state = { count: 0 };
   }
 
   componentDidMount() {
