@@ -15,6 +15,7 @@ type Msg
     | Decrement
 
 
+main : Program Never Model Msg
 main =
     Platform.program
         { init = init
@@ -23,12 +24,15 @@ main =
         }
 
 
+init : ( Model, Cmd Msg )
 init =
     Debug.log "Elm init" 1 ! []
 
 
+subscriptions : Model -> Sub Msg
 subscriptions model =
     let
+        handleEvent : String -> Msg
         handleEvent event =
             case event of
                 "Decrement" ->
@@ -44,6 +48,7 @@ subscriptions model =
             ]
 
 
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
@@ -56,6 +61,7 @@ update msg model =
             (model - 1) ! []
 
 
+updateAndSend : Msg -> Model -> ( Model, Cmd Msg )
 updateAndSend msg model =
     let
         ( next, cmd ) =
