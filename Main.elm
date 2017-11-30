@@ -34,7 +34,7 @@ subscriptions model =
     let
         handleEvent : String -> Msg
         handleEvent event =
-            case event of
+            case (Debug.log "Elm received" event) of
                 "Decrement" ->
                     Decrement
 
@@ -50,7 +50,7 @@ subscriptions model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
+    case (Debug.log "Update" msg) of
         NoOp ->
             model ! []
 
@@ -68,7 +68,7 @@ updateAndSend msg model =
             update msg model
 
         _ =
-            Debug.log "Sending" next
+            Debug.log "Elm sending" next
     in
         next ! [ cmd, state next ]
 
