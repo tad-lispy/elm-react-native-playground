@@ -26,9 +26,9 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    worker.ports.state.subscribe(count => {
-      console.log('JS received: ' + inspect(count));
-      this.setState({ count });
+    worker.ports.state.subscribe(state => {
+      console.log('JS received: ' + inspect(state));
+      this.setState(state);
     });
   }
 

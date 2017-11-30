@@ -6,7 +6,7 @@ import Time exposing (every, second)
 
 
 type alias Model =
-    Int
+    { count : Int }
 
 
 type Msg
@@ -26,7 +26,7 @@ main =
 
 init : ( Model, Cmd Msg )
 init =
-    Debug.log "Elm init" 1 ! []
+    Debug.log "Elm init" Model 0 ! []
 
 
 subscriptions : Model -> Sub Msg
@@ -55,10 +55,10 @@ update msg model =
             model ! []
 
         Increment ->
-            (model + 1) ! []
+            { model | count = model.count + 1 } ! []
 
         Decrement ->
-            (model - 1) ! []
+            { model | count = model.count - 1 } ! []
 
 
 updateAndSend : Msg -> Model -> ( Model, Cmd Msg )
