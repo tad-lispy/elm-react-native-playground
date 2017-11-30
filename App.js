@@ -13,6 +13,7 @@ export default class App extends React.Component {
       <View style={styles.container}>
         <Text>{this.state.count}</Text>
         <Button title="Decrement" onPress={this.decrement} />
+        <Button title="Do a weird thing" onPress={this.freakOut} />
       </View>
     );
   }
@@ -35,6 +36,9 @@ export default class App extends React.Component {
 
   decrement() {
     worker.ports.events.send('Decrement');
+  }
+  freakOut() {
+    worker.ports.events.send('Weird');
   }
 }
 
