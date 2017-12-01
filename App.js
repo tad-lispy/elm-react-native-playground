@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Slider } from 'react-native';
 import { inspect } from 'util';
 
 // Elm program
@@ -13,6 +13,18 @@ export default class App extends React.Component {
       <View style={styles.container}>
         <Text>{this.state.count}</Text>
         <Button title="Decrement" onPress={this.decrement} />
+        <Slider
+          style={{ width: '100%' }}
+          value={this.state.value}
+          onValueChange={this.slide}
+        />
+        <Slider
+          style={{ width: '100%' }}
+          value={this.state.value}
+          onValueChange={this.slide}
+        />
+        <Slider style={{ width: '100%' }} />
+
         <Button title="Do a weird thing" onPress={this.freakOut} />
       </View>
     );
@@ -22,7 +34,7 @@ export default class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { count: 0 };
+    this.state = { count: 0, value: 0.5 };
   }
 
   componentDidMount() {
@@ -33,12 +45,16 @@ export default class App extends React.Component {
   }
 
   // User actions' handlers
-
+  slide(value) {
+    console.log('Slide: ' + inspect(value));
+    // this.setState({ value });
+    worker.ports.events.send({ kind: 'Slide', data: value });
+  }
   decrement() {
     worker.ports.events.send({ kind: 'Decrement', data: null });
   }
   freakOut(event) {
-    console.log('Event: ' + inspect(event));
+    console.log('Weird: ' + inspect(event));
     worker.ports.events.send({ kind: 'Weird', data: event.nativeEvent });
   }
 }

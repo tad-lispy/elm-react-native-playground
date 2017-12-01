@@ -6,13 +6,16 @@ import Time exposing (every, second)
 
 
 type alias Model =
-    { count : Int }
+    { count : Int
+    , value : Float
+    }
 
 
 type Msg
     = NoOp
     | Increment
     | Decrement
+    | Slide Float
 
 
 main : Program Never Model Msg
@@ -26,7 +29,7 @@ main =
 
 init : ( Model, Cmd Msg )
 init =
-    Debug.log "Elm init" Model 0 ! []
+    Debug.log "Elm init" { count = 0, value = 0.5 } ! []
 
 
 subscriptions : Model -> Sub Msg
@@ -41,6 +44,10 @@ subscriptions model =
             case kind of
                 "Decrement" ->
                     Decode.succeed Decrement
+
+                "Slide" ->
+                    Decode.at [ "data" ] Decode.float
+                        |> Decode.map Slide
 
                 _ ->
                     Decode.fail "Usupported event"
@@ -71,6 +78,9 @@ update msg model =
 
         Decrement ->
             { model | count = model.count - 1 } ! []
+
+        Slide value ->
+            { model | value = value } ! []
 
 
 updateAndSend : Msg -> Model -> ( Model, Cmd Msg )
