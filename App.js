@@ -35,10 +35,11 @@ export default class App extends React.Component {
   // User actions' handlers
 
   decrement() {
-    worker.ports.events.send('Decrement');
+    worker.ports.events.send({ kind: 'Decrement', data: null });
   }
-  freakOut() {
-    worker.ports.events.send('Weird');
+  freakOut(event) {
+    console.log('Event: ' + inspect(event));
+    worker.ports.events.send({ kind: 'Weird', data: event.nativeEvent });
   }
 }
 

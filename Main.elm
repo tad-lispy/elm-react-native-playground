@@ -1,7 +1,7 @@
 port module Main exposing (..)
 
 import Platform
-import Json.Decode
+import Json.Decode as Decode
 import Time exposing (every, second)
 
 
@@ -32,14 +32,26 @@ init =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     let
-        handleEvent : String -> Msg
-        handleEvent event =
-            case (Debug.log "Elm received" event) of
+        decoder =
+            Decode.field "kind" Decode.string
+                |> Decode.andThen eventDecoder
+
+        eventDecoder : String -> Decode.Decoder Msg
+        eventDecoder kind =
+            case kind of
                 "Decrement" ->
-                    Decrement
+                    Decode.succeed Decrement
 
                 _ ->
-                    NoOp
+                    Decode.fail "Usupported event"
+
+        handleEvent : Decode.Value -> Msg
+        handleEvent json =
+            json
+                -- Circular references will crash runtime
+                -- |> Debug.log "Elm received"
+                |> Decode.decodeValue decoder
+                |> Result.withDefault NoOp
     in
         Sub.batch
             [ always Increment
@@ -76,4 +88,4 @@ updateAndSend msg model =
 port state : Model -> Cmd msg
 
 
-port events : (String -> msg) -> Sub msg
+port events : (Decode.Value -> msg) -> Sub msg
